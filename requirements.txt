@@ -1,0 +1,9 @@
+uvicorn
+uvicorn[standard]
+fastapi~=0.70.0
+graphene
+strawberry-graphql[asgi]
+strawberry-graphql[fastapi]
+strawberry-graphql[debug-server]
+requests
+python-dotenv
