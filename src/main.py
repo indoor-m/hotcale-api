@@ -21,6 +21,11 @@ class LineNotifyQuery(BaseModel):
     message: str
 
 
+class SlackNotifyQuery(BaseModel):
+    webhook_url: str
+    text: str
+
+
 #
 # Share Function Define
 #
@@ -48,10 +53,24 @@ app.add_middleware(
 
 
 # LINE APIを叩く
-@app.post('/')
+@app.post('/line')
 async def post_line_notify(query: LineNotifyQuery):
     line_notify_api = 'https://notify-api.line.me/api/notify'
 
     headers = {'Authorization': f'Bearer {query.token}'}
     data = {'message': f'{query.message}'}
     requests.post(line_notify_api, headers=headers, data=data)
+
+
+# Slack APIを叩く
+@app.post('/slack')
+async def post_slack_notify(query: SlackNotifyQuery):
+    icon_url = None
+    if get_settings().icon_url != '':
+        icon_url = get_settings().icon_url
+
+    requests.post(query.webhook_url, json={
+        'username': 'ほっとけーる',
+        'icon_url': icon_url,
+        'text': query.text
+    })
